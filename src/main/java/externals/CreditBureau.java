@@ -9,11 +9,11 @@ import java.util.concurrent.TimeoutException;
 
 public class CreditBureau {
 
-    private static final String EXCHANGE_NAME = "customer_exchange";
+    private static final String EXCHANGE_NAME = "customer_direct_exchange";
 
     public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException {
         getCreditInfo();
-        returnCreditScore();
+//        returnCreditScore();
     }
 
     public static void getCreditInfo() throws IOException, TimeoutException, InterruptedException {
@@ -22,10 +22,8 @@ public class CreditBureau {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare( EXCHANGE_NAME, "fanout" );
         String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind( queueName, EXCHANGE_NAME, "" );
-        System.out.println( "Queue name: " + queueName );
+        channel.queueBind( queueName, EXCHANGE_NAME, "credit_bureau" );
         System.out.println( " [*] Waiting for messages. To exit press CTRL+C" );
 
         QueueingConsumer consumer = new QueueingConsumer( channel );

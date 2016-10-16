@@ -15,8 +15,6 @@ public class GetCreditcore {
 
     public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException {
         getCustomerRequest();
-//        sendRequestCreditScore();
-//        GetRequestCreditScore();
     }
 
     public static void getCustomerRequest() throws IOException, TimeoutException, InterruptedException {
@@ -37,21 +35,21 @@ public class GetCreditcore {
             String message = new String( delivery.getBody() );
 
             System.out.println( " [x] Received from the customer '" + message + "'" );
+            
+            sendRequestCreditScore();
         }
     }
 
-    /*public static void sendRequestCreditScore() throws IOException, TimeoutException, InterruptedException { 
+    public static void sendRequestCreditScore() throws IOException, TimeoutException, InterruptedException { 
         creditBureau = new CreditBureau();
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare( EXCHANGE_NAME_CUSTOMER, "fanout" );
-
         String message = "Give me the credit score for 3000$/2 years";
 
-        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "", null, message.getBytes() ); //the message should be a command
+        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "credit_bureau", null, message.getBytes() ); //the message should be a command
         System.out.println( " [x] Sent request for credit score '" + message + "'" );
 
         creditBureau.getCreditInfo();
@@ -60,7 +58,7 @@ public class GetCreditcore {
         connection.close();
     }
 
-    public static void GetRequestCreditScore() throws IOException, TimeoutException, InterruptedException {
+    /*public static void GetRequestCreditScore() throws IOException, TimeoutException, InterruptedException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
