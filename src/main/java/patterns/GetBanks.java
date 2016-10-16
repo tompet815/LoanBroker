@@ -49,7 +49,7 @@ public class GetBanks {
         channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "rule_base", null, message.getBytes() );
         System.out.println( " [x] Sent request to rule base '" + message + "'" );
 
-        getCreditScore();
+        getRelevantBanks();
 
         channel.close();
         connection.close();
