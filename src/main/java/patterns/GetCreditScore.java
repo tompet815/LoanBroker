@@ -22,7 +22,6 @@ public class GetCreditScore {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare( EXCHANGE_NAME_CUSTOMER, "direct" );
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind( queueName, EXCHANGE_NAME_CUSTOMER, "customer" );
 
