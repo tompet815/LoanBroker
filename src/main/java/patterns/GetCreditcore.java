@@ -9,14 +9,14 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class GetCreditcore {
-      private static final String EXCHANGE_NAME_CUSTOMER = "customer_exchange"; 
+      private static final String EXCHANGE_NAME_CUSTOMER = "customer_direct_exchange"; 
 //    private static final String EXCHANGE_NAME_CREDIT_BUREAU = "customer_exchange";
     private static CreditBureau creditBureau;
 
     public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException {
         getCustomerRequest();
-        sendRequestCreditScore();
-        GetRequestCreditScore();
+//        sendRequestCreditScore();
+//        GetRequestCreditScore();
     }
 
     public static void getCustomerRequest() throws IOException, TimeoutException, InterruptedException {
@@ -25,9 +25,9 @@ public class GetCreditcore {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare( EXCHANGE_NAME_CUSTOMER, "fanout" );
+        channel.exchangeDeclare( EXCHANGE_NAME_CUSTOMER, "direct" );
         String queueName = channel.queueDeclare().getQueue();
-        channel.queueBind( queueName, EXCHANGE_NAME_CUSTOMER, "" );
+        channel.queueBind( queueName, EXCHANGE_NAME_CUSTOMER, "customer" );
         System.out.println( " [*] Waiting for messages. To exit press CTRL+C" );
 
         QueueingConsumer consumer = new QueueingConsumer( channel );
@@ -40,7 +40,7 @@ public class GetCreditcore {
         }
     }
 
-    public static void sendRequestCreditScore() throws IOException, TimeoutException, InterruptedException { 
+    /*public static void sendRequestCreditScore() throws IOException, TimeoutException, InterruptedException { 
         creditBureau = new CreditBureau();
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
@@ -80,6 +80,6 @@ public class GetCreditcore {
 
             System.out.println( " [x] Received credit score'" + message + "'" );
         }
-    }
+    }*/
 
 }
