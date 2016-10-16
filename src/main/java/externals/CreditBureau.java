@@ -13,7 +13,6 @@ public class CreditBureau {
 
     public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException {
         getCreditInfo();
-//        returnCreditScore();
     }
 
     public static void getCreditInfo() throws IOException, TimeoutException, InterruptedException {
@@ -24,7 +23,6 @@ public class CreditBureau {
 
         String queueName = channel.queueDeclare().getQueue();
         channel.queueBind( queueName, EXCHANGE_NAME, "credit_bureau" );
-        System.out.println( " [*] Waiting for messages. To exit press CTRL+C" );
 
         QueueingConsumer consumer = new QueueingConsumer( channel );
         channel.basicConsume( queueName, true, consumer );
@@ -33,6 +31,7 @@ public class CreditBureau {
             String message = new String( delivery.getBody() );
 
             System.out.println( " [x] Received '" + message + "'" );
+            returnCreditScore();
 
         }
     }
@@ -43,11 +42,9 @@ public class CreditBureau {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        channel.exchangeDeclare( EXCHANGE_NAME, "fanout" );
-
         String message = "" + calculateCreditScore();
 
-        channel.basicPublish( EXCHANGE_NAME, "", null, message.getBytes() ); //the message should be a command
+        channel.basicPublish( EXCHANGE_NAME, "credit_score", null, message.getBytes() ); //the message should be a command
         System.out.println( " [x] Sent '" + message + "'" );
 
         channel.close();
