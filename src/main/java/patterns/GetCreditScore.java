@@ -4,7 +4,6 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
-import externals.CreditBureau;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
@@ -12,7 +11,6 @@ public class GetCreditScore {
 
     private static final String EXCHANGE_NAME_CUSTOMER = "customer_direct_exchange";
 //    private static final String EXCHANGE_NAME_CREDIT_BUREAU = "customer_exchange";
-    private static CreditBureau creditBureau;
 
     public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException {
         getCustomerRequest();
@@ -41,7 +39,6 @@ public class GetCreditScore {
     }
 
     public static void sendRequestCreditScore() throws IOException, TimeoutException, InterruptedException {
-        creditBureau = new CreditBureau();
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
@@ -49,7 +46,7 @@ public class GetCreditScore {
 
         String message = "Give me the credit score for 3000$/2 years";
 
-        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "credit_bureau", null, message.getBytes() ); //the message should be a command
+        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "credit_bureau", null, message.getBytes() );
         System.out.println( " [x] Sent request for credit score '" + message + "'" );
 
         getCreditScore();
@@ -74,7 +71,26 @@ public class GetCreditScore {
             String message = new String( delivery.getBody() );
 
             System.out.println( " [x] Received credit score = '" + message + "'" );
+            
+            sendScoreToGetBanks( message );
         }
+    }
+
+    public static void sendScoreToGetBanks(String creditScore) throws IOException, TimeoutException, InterruptedException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost( "datdb.cphbusiness.dk" );
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+
+        String message = creditScore;
+
+        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "banks", null, message.getBytes() );
+        System.out.println( " [x] Sent request to get banks '" + message + "'" );
+
+        getCreditScore();
+
+        channel.close();
+        connection.close();
     }
 
 }

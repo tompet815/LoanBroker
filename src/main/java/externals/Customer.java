@@ -6,8 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 
 public class Customer {
 
-    //to do the connection between the customer details and the credit score; to take the details from the customer queue and send them to the credit queue
-    //I will look into command messages implementation with RabbitMQ; in this way we can maybe have 1 method for sending a request and getting the response
+    //to look into command messages implementation with RabbitMQ; in this way we can maybe have 1 method for sending a request and getting the response
     
     private static final String EXCHANGE_NAME = "customer_direct_exchange";
 
