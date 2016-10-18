@@ -12,7 +12,6 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
@@ -66,7 +65,7 @@ public class XMLTranslator implements IMessaging {
 
             Marshaller marshaller = jc.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            JAXBElement<Data> je2 = new JAXBElement<Data>(new QName("data"), Data.class, data);
+            JAXBElement<Data> je2 = new JAXBElement<Data>(new QName("LoanRequest"), Data.class, data);
             StringWriter sw = new StringWriter();
             marshaller.marshal(je2, sw);
             String xmlString = sw.toString();

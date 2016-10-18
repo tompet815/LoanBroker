@@ -1,13 +1,14 @@
 package com.mycompany.loanbroker.reciplist;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class ReceiveData extends Data implements Serializable {
 
     private List<String> bankExchangeNames;
 
-    public ReceiveData(String ssn, int creditScore, double loanAmoount, int loanDuration, List<String> bankExchangeNames) {
+    public ReceiveData(String ssn, int creditScore, double loanAmoount, Date loanDuration, List<String> bankExchangeNames) {
         super(ssn, creditScore, loanAmoount, loanDuration);
         this.bankExchangeNames = bankExchangeNames;
     }
