@@ -6,7 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 
 public class Customer {
 
-    //to fix the rule base and get banks
+    //to fix the rule base and get banks; make the RuleBase to GetBanks
     //to change the method calculateRelevantBanks in the RuleBase class. It should return an ArrayList, not a String
     //to look into command messages implementation with RabbitMQ; in this way we can maybe have 1 method for sending a request and getting the response
     

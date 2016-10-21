@@ -18,10 +18,7 @@ public class RuleBase {
     }
 
     public RuleBase() {
-        this.banks = new ArrayList<>();
-        banks.add( "Danske Bank" );
-        banks.add( "Nordea" );
-        banks.add( "Jyske Bank" );
+        
     }
 
     public static void getRequestFromGetBanks() throws IOException, TimeoutException, InterruptedException {
@@ -40,11 +37,18 @@ public class RuleBase {
             String message = new String( delivery.getBody() );
 
             System.out.println( " [x] Received from the get banks '" + message + "'" );
+            
+            sendRelevantBanks( message );
 
         }
     }
 
     public static String calculateRelevantBanks( String creditScore ) {
+        banks = new ArrayList<>();
+        banks.add( "Danske Bank" );
+        banks.add( "Nordea" );
+        banks.add( "Jyske Bank" );
+        
         int credScore = Integer.parseInt( creditScore );
         if ( credScore >= 500 ) {
             return banks.get( 0 );
@@ -62,11 +66,10 @@ public class RuleBase {
         Channel channel = connection.createChannel();
 
         String message = creditScore;
-
-        channel.basicPublish( EXCHANGE_NAME, "relevant_banks", null, message.getBytes() );
-        System.out.println( " [x] Sent request to rule base '" + message + "'" );
-
         String relevant_bank = calculateRelevantBanks( message );
+
+        channel.basicPublish( EXCHANGE_NAME, "relevant_banks", null, relevant_bank.getBytes() );
+        System.out.println( " [x] Sent request to GetBanks '" + relevant_bank + "'" );
 
         channel.close();
         connection.close();
