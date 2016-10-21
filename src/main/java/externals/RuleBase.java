@@ -50,13 +50,15 @@ public class RuleBase {
         banks.add( "Jyske Bank" );
         
         int credScore = Integer.parseInt( creditScore );
+        String result= "";
         if ( credScore >= 500 ) {
-            return banks.get( 0 );
+           result= banks.get( 0 ) + "; "+ banks.get( 1);
         } else if ( credScore >= 300 ) {
-            return banks.get( 1 );
+            result= banks.get( 1 ) + "; "+ banks.get( 1);
         } else {
-            return banks.get( 2 );
+            result= banks.get( 2 )+ "; "+ banks.get( 0);
         }
+        return result;
     }
 
     public static void sendRelevantBanks( String creditScore ) throws IOException, TimeoutException, InterruptedException {
