@@ -18,7 +18,7 @@ public class RuleBase {
     }
 
     public RuleBase() {
-        
+
     }
 
     public static void getRequestFromGetBanks() throws IOException, TimeoutException, InterruptedException {
@@ -37,41 +37,43 @@ public class RuleBase {
             String message = new String( delivery.getBody() );
 
             System.out.println( " [x] Received from the get banks '" + message + "'" );
-            
+
             sendRelevantBanks( message );
 
         }
     }
 
-    public static String calculateRelevantBanks( String creditScore ) {
+    public static String calculateRelevantBanks( String message ) {
         banks = new ArrayList<>();
         banks.add( "Danske Bank" );
         banks.add( "Nordea" );
         banks.add( "Jyske Bank" );
-        
-        int credScore = Integer.parseInt( creditScore );
-        String result= "";
+        String[] msgElements = message.split( ": " );
+        int length = msgElements.length;
+        int credScore = Integer.parseInt( msgElements[ length - 1 ] );
+        String result = "";
         if ( credScore >= 500 ) {
-           result= banks.get( 0 ) + "; "+ banks.get( 1);
+            result = banks.get( 0 ) + ", " + banks.get( 1 );
         } else if ( credScore >= 300 ) {
-            result= banks.get( 1 ) + "; "+ banks.get( 1);
+            result = banks.get( 1 ) + ", " + banks.get( 1 );
         } else {
-            result= banks.get( 2 )+ "; "+ banks.get( 0);
+            result = banks.get( 2 ) + ", " + banks.get( 0 );
         }
         return result;
     }
 
-    public static void sendRelevantBanks( String creditScore ) throws IOException, TimeoutException, InterruptedException {
+    public static void sendRelevantBanks( String inputMessage ) throws IOException, TimeoutException, InterruptedException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        String message = creditScore;
-        String relevant_bank = calculateRelevantBanks( message );
+        String message = inputMessage;
+        String relevant_banks = calculateRelevantBanks( message );
+        String responseMessage= message + "; relevant banks: "+ relevant_banks;
 
-        channel.basicPublish( EXCHANGE_NAME, "relevant_banks", null, relevant_bank.getBytes() );
-        System.out.println( " [x] Sent request to GetBanks '" + relevant_bank + "'" );
+        channel.basicPublish( EXCHANGE_NAME, "relevant_banks", null, responseMessage.getBytes() );
+        System.out.println( " [x] Sent request to GetBanks '" + responseMessage + "'" );
 
         channel.close();
         connection.close();

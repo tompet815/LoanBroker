@@ -45,7 +45,7 @@ public class GetBanks {
         Channel channel = connection.createChannel();
 
         String message = creditScore;
-
+            
         channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "rule_base", null, message.getBytes() );
         System.out.println( " [x] Sent request to rule base '" + message + "'" );
 

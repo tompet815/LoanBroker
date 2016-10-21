@@ -19,7 +19,7 @@ public class Customer {
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        String message = "I want to loan 3000$. I want to pay in 2 years";
+        String message = "amount: 3000$; duration: 2 years";
 
         channel.basicPublish( EXCHANGE_NAME, "customer", null, message.getBytes() );
         System.out.println( " [x] Sent '" + message + "'" );

@@ -31,18 +31,18 @@ public class CreditBureau {
             String message = new String( delivery.getBody() );
 
             System.out.println( " [x] Received '" + message + "'" );
-            returnCreditScore();
+            returnCreditScore( message );
 
         }
     }
 
-    public static void returnCreditScore() throws IOException, TimeoutException {
+    public static void returnCreditScore( String clientInput ) throws IOException, TimeoutException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        String message = "" + calculateCreditScore();
+        String message = clientInput + "; credit score: " + calculateCreditScore();
 
         channel.basicPublish( EXCHANGE_NAME, "credit_score", null, message.getBytes() );
         System.out.println( " [x] Sent '" + message + "'" );

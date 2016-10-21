@@ -33,17 +33,17 @@ public class GetCreditScore {
 
             System.out.println( " [x] Received from the customer '" + message + "'" );
 
-            sendRequestCreditScore();
+            sendRequestCreditBureau(message);
         }
     }
 
-    public static void sendRequestCreditScore() throws IOException, TimeoutException, InterruptedException {
+    public static void sendRequestCreditBureau(String clientInput) throws IOException, TimeoutException, InterruptedException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        String message = "Give me the credit score for 3000$/2 years";
+        String message = clientInput;
 
         channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "credit_bureau", null, message.getBytes() );
         System.out.println( " [x] Sent request for credit score '" + message + "'" );
@@ -75,13 +75,11 @@ public class GetCreditScore {
         }
     }
 
-    public static void sendScoreToGetBanks(String creditScore) throws IOException, TimeoutException, InterruptedException {
+    public static void sendScoreToGetBanks(String message) throws IOException, TimeoutException, InterruptedException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
-
-        String message = creditScore;
 
         channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "banks", null, message.getBytes() );
         System.out.println( " [x] Sent request to get banks '" + message + "'" );
