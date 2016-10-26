@@ -14,10 +14,10 @@ public class GetBanks {
     private static final String EXCHANGE_NAME_CUSTOMER = "customer_direct_exchange";
     
     public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException {
-        getRelevantBanks();
+        getCreditScore();
     }
     
-    public static void getRelevantBanks() throws IOException, TimeoutException, InterruptedException {
+    public static void getCreditScore() throws IOException, TimeoutException, InterruptedException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
@@ -45,7 +45,7 @@ public class GetBanks {
         Channel channel = connection.createChannel();
 
         String message = creditScore;
-
+            
         channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "rule_base", null, message.getBytes() );
         System.out.println( " [x] Sent request to rule base '" + message + "'" );
 
@@ -53,6 +53,25 @@ public class GetBanks {
 
         channel.close();
         connection.close();
+    }
+    
+    public static void getRelevantBanks() throws IOException, TimeoutException, InterruptedException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost( "datdb.cphbusiness.dk" );
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+
+        String queueName = channel.queueDeclare().getQueue();
+        channel.queueBind( queueName, EXCHANGE_NAME_CUSTOMER, "relevant_banks" );
+
+        QueueingConsumer consumer = new QueueingConsumer( channel );
+        channel.basicConsume( queueName, true, consumer );
+        while ( true ) {
+            QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+            String message = new String( delivery.getBody() );
+
+            System.out.println( " [x] Received from the rule base'" + message + "'" );
+        }
     }
     
 }
