@@ -1,10 +1,10 @@
 package com.mycompany.loanbroker.translators;
 
+import com.google.gson.Gson;
 import com.mycompany.loanbroker.connector.RabbitMQConnector;
 import com.mycompany.loanbroker.interfaces.IMessaging;
 import com.mycompany.loanbroker.reciplist.Data;
 import com.mycompany.loanbroker.reciplist.RecipientList;
-import com.mycompany.loanbroker.reciplist.XMLData;
 import com.mycompany.loanbroker.utilities.MessageUtility;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -21,14 +21,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
-public class XMLTranslator implements IMessaging {
+public class JSONTranslator implements IMessaging {
 
     private final RabbitMQConnector connector = new RabbitMQConnector();
 
     private Channel channel;
     private String queueName;
-    private final String EXCHANGENAME = "whatTranslator.bankXML";
-    private final String BANKEXCHANGENAME = "cphbusiness.bankXML";
+    private final String EXCHANGENAME = "whatTranslator.bankJSON";
+    private final String BANKEXCHANGENAME = "cphbusiness.bankJSON";
     private final MessageUtility util = new MessageUtility();
 
     @Override
@@ -61,25 +61,19 @@ public class XMLTranslator implements IMessaging {
 
         try {
 
-            JAXBContext jc = JAXBContext.newInstance(XMLData.class);
             Data data = (Data) util.deSerializeBody(body);
-            XMLData xmlData=util.convertToXMLData(data);
-            Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            JAXBElement<XMLData> je2 = new JAXBElement(new QName("LoanRequest"), XMLData.class, xmlData);
-            StringWriter sw = new StringWriter();
-            marshaller.marshal(je2, sw);
-            String xmlString = sw.toString();
-            System.out.println("xml" + xmlString);
-            channel.basicPublish(BANKEXCHANGENAME, "", prop, xmlString.getBytes());
+            int months=data.getLoanDuration()*12;
+            data.setLoanDuration(months);
+            Gson gson = new Gson();
+            String jsonString = gson.toJson(data);
+            System.out.println("JSON:" + jsonString);
+            //channel.basicPublish(BANKEXCHANGENAME, "", prop, jsonString.getBytes());
             return true;
         }
         catch (ClassNotFoundException ex) {
             Logger.getLogger(RecipientList.class.getName()).log(Level.SEVERE, null, ex);
         }
-        catch (JAXBException ex) {
-            Logger.getLogger(XMLTranslator.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
         return false;
     }
 

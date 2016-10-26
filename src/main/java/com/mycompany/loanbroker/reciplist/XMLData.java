@@ -1,16 +1,17 @@
 package com.mycompany.loanbroker.reciplist;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
-public class Data implements Serializable {
+public class XMLData implements Serializable {
 
     private String ssn;
     private int creditScore;
     private double loanAmoount;
-    private int loanDuration;
+    private String loanDuration;
 
-    public Data(String ssn, int creditScore, double loanAmoount, int loanDuration) {
+    public XMLData(String ssn, int creditScore, double loanAmoount, String loanDuration) {
         this.ssn = ssn;
         this.creditScore = creditScore;
         this.loanAmoount = loanAmoount;
@@ -29,7 +30,7 @@ public class Data implements Serializable {
         return loanAmoount;
     }
 
-    public int getLoanDuration() {
+    public String getLoanDuration() {
         return loanDuration;
     }
 
@@ -45,7 +46,7 @@ public class Data implements Serializable {
         this.loanAmoount = loanAmoount;
     }
 
-    public void setLoanDuration(int loanDuration) {
+    public void setLoanDuration(String loanDuration) {
         this.loanDuration = loanDuration;
     }
 
