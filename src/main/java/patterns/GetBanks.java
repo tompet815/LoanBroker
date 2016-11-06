@@ -1,5 +1,6 @@
 package patterns;
 
+import com.mycompany.loanbroker.utilities.MessageUtility;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -10,14 +11,15 @@ import java.util.concurrent.TimeoutException;
 import static patterns.GetCreditScore.getCreditScore;
 
 public class GetBanks {
-    
+
     private static final String EXCHANGE_NAME_CUSTOMER = "customer_direct_exchange";
-    
-    public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException {
+    private static MessageUtility messageUtility = new MessageUtility();
+
+    public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
         getCreditScore();
     }
-    
-    public static void getCreditScore() throws IOException, TimeoutException, InterruptedException {
+
+    public static void getCreditScore() throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
@@ -30,32 +32,30 @@ public class GetBanks {
         channel.basicConsume( queueName, true, consumer );
         while ( true ) {
             QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-            String message = new String( delivery.getBody() );
+            byte[] message = delivery.getBody();
 
-            System.out.println( " [x] Received from the credit score '" + message + "'" );
+            System.out.println( " [x] Received from the credit score '" + messageUtility.deSerializeBody(message).toString() + "'" );
 
             sendRequestToRuleBase( message );
         }
     }
-    
-    public static void sendRequestToRuleBase(String creditScore) throws IOException, TimeoutException, InterruptedException {
+
+    public static void sendRequestToRuleBase( byte[] creditScore ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        String message = creditScore;
-            
-        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "rule_base", null, message.getBytes() );
-        System.out.println( " [x] Sent request to rule base '" + message + "'" );
+        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "rule_base", null, creditScore );
+        System.out.println( " [x] Sent request to rule base '" + messageUtility.deSerializeBody( creditScore ).toString() + "'" );
 
         getRelevantBanks();
 
         channel.close();
         connection.close();
     }
-    
-    public static void getRelevantBanks() throws IOException, TimeoutException, InterruptedException {
+
+    public static void getRelevantBanks() throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
@@ -68,10 +68,10 @@ public class GetBanks {
         channel.basicConsume( queueName, true, consumer );
         while ( true ) {
             QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-            String message = new String( delivery.getBody() );
+            byte[] message = delivery.getBody();
 
-            System.out.println( " [x] Received from the rule base'" + message + "'" );
+            System.out.println( " [x] Received from the rule base'" + messageUtility.deSerializeBody( message ).toString() + "'" );
         }
     }
-    
+
 }
