@@ -6,65 +6,73 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import interfaces.FerryInterface;
+import generalstuff.*;
  
-public class DummyCustomerBackend { //should implement the interface from the contract
+public class DummyCustomerBackend implements FerryInterface { //should implement the interface from the contract
 
-    private DepartureDetail departureDetail;
-    private LineDetail lineDetail;
-    private LineSummary lineSummary;
-    ReservationDetail reservationDetail;
-    DepartureSummary departureSummary;
+    private backendMockModel.DepartureDetail departureDetail;
+    private backendMockModel.LineDetail lineDetail;
+    private backendMockModel.LineSummary lineSummary;
+    backendMockModel.ReservationDetail reservationDetail;
+    backendMockModel.DepartureSummary departureSummary;
     Date departureDate;
-    private static Map<Long, DepartureDetail> departuresForLineAndDate;
+    private static Map<Long, backendMockModel.DepartureDetail> departuresForLineAndDate;
+    private static Map<Long, generalstuff.DepartureDetail> departuresForLineAndDateGeneralStuff;//needed just to return the same type as in the interface
 
     public DummyCustomerBackend() {
 //        the lineDetail object is needed just to get the total amount of lineDetails, 
 //        so I remove it from the collection of line details
-        lineDetail = new LineDetail( "", "", 0, "" );
+        lineDetail = new backendMockModel.LineDetail( "", "", 0, "" );
         lineDetail.getLines().remove( 0 );
-        lineSummary = new LineSummary( "", "", 0, "" );
-        reservationDetail = new ReservationDetail( null, null, "", null, 0, 0, 0, 0, 0.0, 0 );
+        lineSummary = new backendMockModel.LineSummary( "", "", 0, "" );
+        reservationDetail = new backendMockModel.ReservationDetail( null, null, "", null, 0, 0, 0, 0, 0.0, 0 );
         departureDate = new Date();
-        departureSummary = new DepartureSummary( departureDate, lineDetail, null, 0 );
+        departureSummary = new backendMockModel.DepartureSummary( departureDate, lineDetail, null, 0 );
         departuresForLineAndDate = new HashMap<>();
-        departureDetail= new DepartureDetail(50, 100, 120, 150, 10, 100, 20, 1, 1, departureDate, lineSummary, null, 1);
+        departuresForLineAndDateGeneralStuff = new HashMap<>();
+        departureDetail= new backendMockModel.DepartureDetail(50, 100, 120, 150, 10, 100, 20, 1, 1, departureDate, lineSummary, null, 1);
         saveReservation( departureDetail, 4, "small" );
     }
     
-    public static void main( String[] args ) {
-        DummyCustomerBackend dummyCustomerBackend= new DummyCustomerBackend();
-    }
-
-    public Collection<LineSummary> createLine( String name, String departurePort,
+    @Override
+    public Collection<generalstuff.LineSummary> createLine( String name, String departurePort,
             String destinationPort, double personPrice, double carPrice,
-            double lorryPrice ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+            double lorryPrice ) {
+        return null;
     }
 
-    public Boolean updateLine( LineIdentifier lineIdentifier, String name,
+    @Override
+    public Boolean updateLine( generalstuff.LineIdentifier lineIdentifier, String name,
             String departurePort, String destinationPort, double personPrice,
-            double carPrice, double lorryPrice ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+            double carPrice, double lorryPrice ) {
+        return null;
     }
 
-    public Boolean deleteLine( LineIdentifier lineIdentifier ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Boolean deleteLine( generalstuff.LineIdentifier lineIdentifier ) {
+        return null;
     }
 
-    public LineDetail getLineDetail( LineIdentifier lineIdentifier ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public generalstuff.LineDetail getLineDetail( generalstuff.LineIdentifier lineIdentifier ) {
+        return null;
     }
 
-    public Collection<LineSummary> getLines() {
-        return lineDetail.getLines().values();
+    //to fix
+    @Override
+    public Collection<generalstuff.LineSummary> getLines() {
+//        return (generalstuff.LineSummary)lineDetail.getLines().values();
     }
 
-    public Collection<FerrySummary> listFerries() throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Collection<generalstuff.FerrySummary> listFerries() {
+        return null;
     }
 
     //finds the departures for a specific line and date (Note: the time is not taken into consideration!)
-    public Collection<DepartureDetail> getDepartures( long lineIdentifier, Date departureDate ) {
+    @Override
+    public Collection<generalstuff.DepartureDetail> getDepartures( long lineIdentifier, Date departureDate ) {
         Calendar calendardepartureDate = Calendar.getInstance();
         calendardepartureDate.setTime( departureDate );
         Calendar calendar = Calendar.getInstance();
@@ -79,43 +87,52 @@ public class DummyCustomerBackend { //should implement the interface from the co
         return departuresForLineAndDate.values();
     }
 
-    public FerryDetail getFerryInfo( FerryIdentifier ferry ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public generalstuff.FerryDetail getFerryInfo( generalstuff.FerryIdentifier ferry ) {
+        return null;
     }
 
-    public Collection<FerrySummary> createFerry( String ferryName, String config ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Collection<generalstuff.FerrySummary> createFerry( String ferryName, String config ) {
+       return null;
     }
 
-    public Boolean removeFerry( FerryIdentifier ferryIdentifier ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Boolean removeFerry( generalstuff.FerryIdentifier ferryIdentifier ) {
+       return null;
     }
 
-    public Boolean updateFerry( FerryIdentifier ferryIdentifier, String ferryName,
-            String config ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Boolean updateFerry( generalstuff.FerryIdentifier ferryIdentifier, String ferryName,
+            String config ) {
+        return null;
     }
 
-    public Collection<DepartureDetail> listDepatureInfo() throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Collection<generalstuff.DepartureDetail> listDepatureInfo() {
+        return null;
     }
 
-    public Boolean deleteDeparture( DepartureIdentifier departureIdentifier ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Boolean deleteDeparture( generalstuff.DepartureIdentifier departureIdentifier ) {
+        return null;
     }
 
-    public Boolean createDeparture( LineIdentifier lineIdentifier,
-            FerryIdentifier ferryIdentifier, Boolean alternateConfig,
-            Date departureDate ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Boolean createDeparture( generalstuff.LineIdentifier lineIdentifier,
+            generalstuff.FerryIdentifier ferryIdentifier, Boolean alternateConfig,
+            Date departureDate ) {
+        return null;
     }
 
-    public Boolean updateDeparture( DepartureIdentifier departureIdentifier,
-            LineIdentifier lineIdentifier, FerryIdentifier ferryIdentifier,
-            Boolean alternateConfig, Date departureDate ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Boolean updateDeparture( generalstuff.DepartureIdentifier departureIdentifier,
+            generalstuff.LineIdentifier lineIdentifier, generalstuff.FerryIdentifier ferryIdentifier,
+            Boolean alternateConfig, Date departureDate ) {
+        return null;
     }
 
+    @Override
     public ReservationDetail seeReservation( int id ) {
         for ( Long l : reservationDetail.getReservations().keySet() ) {
             if ( reservationDetail.getReservations().get( l ).getId() == id ) {
@@ -125,6 +142,7 @@ public class DummyCustomerBackend { //should implement the interface from the co
         return null;
     }
 
+    @Override
     public ReservationSummary saveReservation( DepartureIdentifier departureIdentifier, int passengersNb, String Cartype ) {
         int maxId = 0;
         for ( Long l : reservationDetail.getReservations().keySet() ) {
@@ -138,6 +156,7 @@ public class DummyCustomerBackend { //should implement the interface from the co
                                       2, 2, 1, 0, 40, maxId + 1 );
     }
 
+    @Override
     public ReservationSummary updateReservation( ReservationIdentifier reservationIdentifier,
             DepartureIdentifier departureIdentifier, int passengersNb, String Cartype ) {
         Date departureDate = new Date();
@@ -160,6 +179,7 @@ public class DummyCustomerBackend { //should implement the interface from the co
         return null;
     }
 
+    @Override
     public Boolean deleteReservation( ReservationIdentifier reservationIdentifier ) {
         for ( Long l : reservationDetail.getReservations().keySet() ) {
             if ( reservationDetail.getReservations().get( l ).getId() == reservationIdentifier.getId() ) {
@@ -170,27 +190,15 @@ public class DummyCustomerBackend { //should implement the interface from the co
         return false;
     }
 
-    public Boolean removeFerryConfig( FerryConfigIdentifier ferryConfigIdentifier ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+    @Override
+    public Boolean removeFerryConfig( FerryConfigIdentifier ferryConfigIdentifier ) {
+        return null;
     }
 
+    @Override
     public Boolean updateFerryConfig( FerryConfigIdentifier ferryConfigIdentifier,
             String ferryConfigName, int peopleCapacity, int vehicleCapacity,
-            int weightCapacity ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
-    }
-
-    public Boolean createFerryConfig( String ferryConfigName, int peopleCapacity,
-            int vehicleCapacity, int weightCapacity ) throws NoSuchMethodException {
-        throw new NoSuchMethodException();
-    }
-
-    public Collection<FerryConfigSummary> listFerryConfigs() throws NoSuchMethodException {
-        throw new NoSuchMethodException();
-    }
-
-    public FerryConfigDetail getFerryConfigDetail( FerryConfigIdentifier ferryConfigIdentifier )
-            throws NoSuchMethodException {
-        throw new NoSuchMethodException();
+            int weightCapacity ) {
+        return null;
     }
 }
