@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
+ 
 public class DummyCustomerBackend { //should implement the interface from the contract
 
     private DepartureDetail departureDetail;
