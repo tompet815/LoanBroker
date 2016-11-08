@@ -27,6 +27,8 @@ public class DummyCustomerBackend { //should implement the interface from the co
         departureDate = new Date();
         departureSummary = new DepartureSummary( departureDate, lineDetail, null, 0 );
         departuresForLineAndDate = new HashMap<>();
+        departureDetail= new DepartureDetail(50, 100, 120, 150, 10, 100, 20, 1, 1, departureDate, lineSummary, null, 1);
+        saveReservation( departureDetail, 4, "small" );
     }
 
     public Collection<LineSummary> createLine( String name, String departurePort,
