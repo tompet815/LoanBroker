@@ -1,83 +1,98 @@
 package backendMock;
 
-import backendMockModel.*;
-import java.util.Calendar; 
+//import backendMockModel.*;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import interfaces.FerryInterface;
 import generalstuff.*;
- 
+import utilities.*;
+
 public class DummyCustomerBackend implements FerryInterface { //should implement the interface from the contract
 
-    private backendMockModel.DepartureDetail departureDetail;
-    private backendMockModel.LineDetail lineDetail;
-    private backendMockModel.LineSummary lineSummary;
-    backendMockModel.ReservationDetail reservationDetail;
-    backendMockModel.DepartureSummary departureSummary;
+    private DepartureDetail departureDetail;
+    private LineDetail lineDetail;
+    private LineSummary lineSummary;
+    ReservationDetail reservationDetail;
+    DepartureSummary departureSummary;
     Date departureDate;
-    private static Map<Long, backendMockModel.DepartureDetail> departuresForLineAndDate;
-    private static Map<Long, generalstuff.DepartureDetail> departuresForLineAndDateGeneralStuff;//needed just to return the same type as in the interface
+    DepartureDetailListManagement departureDetailListManagement;
+    FerryConfigListManagement ferryConfigListManagement;
+    FerryDetailListManagement ferryDetailListManagement;
+    LineSummaryListManagement lineSummarylListManagement;
+    ReservationDetailListManagement reservationDetailListManagement;
+    ReservationDetail dummyReservationDetail;
+    private static Map<Long, DepartureDetail> departuresForLineAndDate;
+    private static Map<Long, DepartureDetail> departuresForLineAndDateGeneralStuff;//needed just to return the same type as in the interface
 
     public DummyCustomerBackend() {
 //        the lineDetail object is needed just to get the total amount of lineDetails, 
 //        so I remove it from the collection of line details
-        lineDetail = new backendMockModel.LineDetail( "", "", 0, "" );
-        lineDetail.getLines().remove( 0 );
-        lineSummary = new backendMockModel.LineSummary( "", "", 0, "" );
-        reservationDetail = new backendMockModel.ReservationDetail( null, null, "", null, 0, 0, 0, 0, 0.0, 0 );
+        departureDetailListManagement = new DepartureDetailListManagement();
+        ferryConfigListManagement = new FerryConfigListManagement();
+        ferryDetailListManagement = new FerryDetailListManagement();
+        lineSummarylListManagement = new LineSummaryListManagement();
+        reservationDetailListManagement = new ReservationDetailListManagement();
+        lineDetail = new LineDetail( "", "", 0, "" );
+        lineSummary = new LineSummary( "", "", 0, "" );
+        reservationDetail = new ReservationDetail( null, null, "", null, 0, 0, 0, 0, 0.0, 0 );
         departureDate = new Date();
-        departureSummary = new backendMockModel.DepartureSummary( departureDate, lineDetail, null, 0 );
+        departureSummary = new DepartureSummary( departureDate, lineDetail, null, 0 );
         departuresForLineAndDate = new HashMap<>();
         departuresForLineAndDateGeneralStuff = new HashMap<>();
-        departureDetail= new backendMockModel.DepartureDetail(50, 100, 120, 150, 10, 100, 20, 1, 1, departureDate, lineSummary, null, 1);
-        saveReservation( departureDetail, 4, "small" );
+        departureDetail = new DepartureDetail( 50, 100, 120, 150, 10, 100, 20, 1, 1, departureDate, lineSummary, null, 1 );
+        departureDetailListManagement.getDepartures().put(
+                departureDetailListManagement.getNextIdDeparture(), departureDetail );
+        dummyReservationDetail = new ReservationDetail( departureDate, departureSummary,
+                                                        "Patrick Huston", departureSummary, 4, 0, 1, 0, 0,
+                                                        Math.toIntExact( reservationDetailListManagement.getNextIdReservationDetail() ) );
+        reservationDetailListManagement.addReservationDetail( dummyReservationDetail );
     }
-    
+
     @Override
     public Collection<generalstuff.LineSummary> createLine( String name, String departurePort,
-            String destinationPort, double personPrice, double carPrice,
-            double lorryPrice ) {
-        return null;
+            String destinationPort, double personPrice, double carPrice, double lorryPrice ) {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public Boolean updateLine( generalstuff.LineIdentifier lineIdentifier, String name,
+    public Boolean updateLine( LineIdentifier lineIdentifier, String name,
             String departurePort, String destinationPort, double personPrice,
             double carPrice, double lorryPrice ) {
-        return null;
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public Boolean deleteLine( generalstuff.LineIdentifier lineIdentifier ) {
-        return null;
+    public Boolean deleteLine( LineIdentifier lineIdentifier ) {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public generalstuff.LineDetail getLineDetail( generalstuff.LineIdentifier lineIdentifier ) {
-        return null;
+    public generalstuff.LineDetail getLineDetail( LineIdentifier lineIdentifier ) {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     //to fix
     @Override
-    public Collection<generalstuff.LineSummary> getLines() {
-//        return (generalstuff.LineSummary)lineDetail.getLines().values();
+    public Collection<LineSummary> getLines() {
+        return lineSummarylListManagement.getLineSummaries().values();
     }
 
     @Override
-    public Collection<generalstuff.FerrySummary> listFerries() {
-        return null;
+    public Collection<FerrySummary> listFerries() {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     //finds the departures for a specific line and date (Note: the time is not taken into consideration!)
     @Override
-    public Collection<generalstuff.DepartureDetail> getDepartures( long lineIdentifier, Date departureDate ) {
+    public Collection<DepartureDetail> getDepartures( LineIdentifier lineIdentifier, Date departureDate ) {
         Calendar calendardepartureDate = Calendar.getInstance();
         calendardepartureDate.setTime( departureDate );
         Calendar calendar = Calendar.getInstance();
         int departureDateDay = calendardepartureDate.get( Calendar.DAY_OF_YEAR );
-        for ( DepartureDetail departure : departureDetail.getDepartures().values() ) {
+        for ( DepartureDetail departure : departureDetailListManagement.getDepartures().values() ) {
             calendar.setTime( departure.getDepartureTime() );
             if ( departure.getLineSummary().getId().equals( lineIdentifier )
                     && departureDateDay == calendar.get( Calendar.DAY_OF_YEAR ) ) {
@@ -88,55 +103,55 @@ public class DummyCustomerBackend implements FerryInterface { //should implement
     }
 
     @Override
-    public generalstuff.FerryDetail getFerryInfo( generalstuff.FerryIdentifier ferry ) {
-        return null;
+    public FerryDetail getFerryInfo( FerryIdentifier ferry ) {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public Collection<generalstuff.FerrySummary> createFerry( String ferryName, String config ) {
-       return null;
+    public Collection<FerrySummary> createFerry( String ferryName, String config ) {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public Boolean removeFerry( generalstuff.FerryIdentifier ferryIdentifier ) {
-       return null;
+    public Boolean removeFerry( FerryIdentifier ferryIdentifier ) {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public Boolean updateFerry( generalstuff.FerryIdentifier ferryIdentifier, String ferryName,
-            String config ) {
-        return null;
+    public Boolean updateFerry( FerryIdentifier ferryIdentifier, String ferryName, String config ) {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public Collection<generalstuff.DepartureDetail> listDepatureInfo() {
-        return null;
+    public Collection<DepartureDetail> listDepatureInfo() {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public Boolean deleteDeparture( generalstuff.DepartureIdentifier departureIdentifier ) {
-        return null;
+    public Boolean deleteDeparture( DepartureIdentifier departureIdentifier ) {
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public Boolean createDeparture( generalstuff.LineIdentifier lineIdentifier,
+    public Boolean createDeparture( LineIdentifier lineIdentifier,
             generalstuff.FerryIdentifier ferryIdentifier, Boolean alternateConfig,
             Date departureDate ) {
-        return null;
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
-    public Boolean updateDeparture( generalstuff.DepartureIdentifier departureIdentifier,
+    public Boolean updateDeparture( DepartureIdentifier departureIdentifier,
             generalstuff.LineIdentifier lineIdentifier, generalstuff.FerryIdentifier ferryIdentifier,
             Boolean alternateConfig, Date departureDate ) {
-        return null;
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
-    @Override
+//    @Override
     public ReservationDetail seeReservation( int id ) {
-        for ( Long l : reservationDetail.getReservations().keySet() ) {
-            if ( reservationDetail.getReservations().get( l ).getId() == id ) {
-                return reservationDetail.getReservations().get( l );
+        for ( Long l : reservationDetailListManagement.getReservationDetails().keySet() ) {
+//            System.out.println( "" );
+            if ( Math.toIntExact( l ) == id ) {
+                return reservationDetailListManagement.getReservationDetails().get( l );
             }
         }
         return null;
@@ -144,16 +159,14 @@ public class DummyCustomerBackend implements FerryInterface { //should implement
 
     @Override
     public ReservationSummary saveReservation( DepartureIdentifier departureIdentifier, int passengersNb, String Cartype ) {
-        int maxId = 0;
-        for ( Long l : reservationDetail.getReservations().keySet() ) {
-            if ( reservationDetail.getReservations().get( l ).getId() > maxId ) {
-                maxId = reservationDetail.getReservations().get( l ).getId();
-            }
-        }
-                
-        return new ReservationDetail( departureDate, departureSummary,
-                                      "Mark Johnson", departureDetail,
-                                      2, 2, 1, 0, 40, maxId + 1 );
+
+        ReservationDetail newReservationDetail = new ReservationDetail( departureDate, departureSummary,
+                                                                        "Mark Johnson", departureSummary,
+                                                                        passengersNb, 2, 1, 0, 40, Math.toIntExact(
+                                                                                reservationDetailListManagement.getNextIdReservationDetail() ) );
+        reservationDetailListManagement.addReservationDetail( newReservationDetail );
+
+        return newReservationDetail;
     }
 
     @Override
@@ -161,18 +174,15 @@ public class DummyCustomerBackend implements FerryInterface { //should implement
             DepartureIdentifier departureIdentifier, int passengersNb, String Cartype ) {
         Date departureDate = new Date();
         //for each key, compare the values; then take key and update the value
-        for ( Long l : reservationDetail.getReservations().keySet() ) {
-            if ( reservationDetail.getReservations().get( l ).getId() == reservationIdentifier.getId() ) {
-                return reservationDetail.getReservations().replace(
-                        l, new ReservationDetail( reservationDetail.getReservations().get( l )
-                                .getDepartureSummary().getDepartureTime(),
-                                                  reservationDetail.getReservations().get( l ).getDepartureSummary(),
-                                                  reservationDetail.getReservations().get( l ).getCustomerName(),
-                                                  reservationDetail.getReservations().get( l ).getDeparture(),
-                                                  passengersNb,
-                                                  reservationDetail.getReservations().get( l ).getNumberOfResidents(),
-                                                  reservationDetail.getReservations().get( l ).getNumberOfCars(),
-                                                  reservationDetail.getReservations().get( l ).getNumberOfLorries(),
+        for ( Long l : reservationDetailListManagement.getReservationDetails().keySet() ) {
+            if ( Math.toIntExact( 1 ) == reservationIdentifier.getId() ) {
+                return reservationDetailListManagement.getReservationDetails().replace(
+                        l, new ReservationDetail( departureDate,
+                                                  reservationDetailListManagement.getReservationDetails().get( l ).getDepartureSummary(),
+                                                  "new customer", reservationDetailListManagement.getReservationDetails().get( l ).getDeparture(),
+                                                  passengersNb, reservationDetailListManagement.getReservationDetails().get( l ).getNumberOfResidents(),
+                                                  reservationDetailListManagement.getReservationDetails().get( l ).getNumberOfCars(),
+                                                  reservationDetailListManagement.getReservationDetails().get( l ).getNumberOfLorries(),
                                                   40, reservationIdentifier.getId() ) );
             }
         }
@@ -181,9 +191,9 @@ public class DummyCustomerBackend implements FerryInterface { //should implement
 
     @Override
     public Boolean deleteReservation( ReservationIdentifier reservationIdentifier ) {
-        for ( Long l : reservationDetail.getReservations().keySet() ) {
-            if ( reservationDetail.getReservations().get( l ).getId() == reservationIdentifier.getId() ) {
-                reservationDetail.getReservations().remove( l );
+        for ( Long l : reservationDetailListManagement.getReservationDetails().keySet() ) {
+            if ( Math.toIntExact( 1 ) == reservationIdentifier.getId() ) {
+                reservationDetailListManagement.getReservationDetails().remove( l );
                 return true;
             }
         }
@@ -192,13 +202,28 @@ public class DummyCustomerBackend implements FerryInterface { //should implement
 
     @Override
     public Boolean removeFerryConfig( FerryConfigIdentifier ferryConfigIdentifier ) {
-        return null;
+        throw new UnsupportedOperationException( "Not supported yet." );
     }
 
     @Override
     public Boolean updateFerryConfig( FerryConfigIdentifier ferryConfigIdentifier,
             String ferryConfigName, int peopleCapacity, int vehicleCapacity,
             int weightCapacity ) {
-        return null;
+        throw new UnsupportedOperationException( "Not supported yet." );
+    }
+
+    @Override
+    public Boolean createFerryConfig( String string, int i, int i1, int i2 ) {
+        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Collection<FerryConfigSummary> listFerryConfigs() {
+        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public FerryConfigDetail getFerryConfigDetail( FerryConfigIdentifier fci ) {
+        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
     }
 }
