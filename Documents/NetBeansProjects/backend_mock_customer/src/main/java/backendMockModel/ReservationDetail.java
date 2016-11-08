@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ReservationDetail extends ReservationSummary{
+public class ReservationDetail extends ReservationSummary {
 
     private Date reservationMade;
     private DepartureSummary departureSummary;
@@ -17,11 +17,11 @@ public class ReservationDetail extends ReservationSummary{
     private static long nextIdReservation = 0;
     private static Map<Long, ReservationDetail> reservations = new HashMap<>();
 
-    public ReservationDetail( Date reservationMade, DepartureSummary  departureSummary, 
-            String customerName, DepartureDetail departure, int numberOfPeople, 
-            int numberOfResidents, int numberOfCars, int numberOfLorries,  
+    public ReservationDetail( Date reservationMade, DepartureSummary departureSummary,
+            String customerName, DepartureDetail departure, int numberOfPeople,
+            int numberOfResidents, int numberOfCars, int numberOfLorries,
             double totalPrice, int id ) {
-        super(totalPrice, id);
+        super( totalPrice, id );
         this.reservationMade = reservationMade;
         this.departureSummary = departureSummary;
         this.customerName = customerName;

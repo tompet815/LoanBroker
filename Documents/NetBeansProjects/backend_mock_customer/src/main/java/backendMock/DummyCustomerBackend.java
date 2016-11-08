@@ -30,6 +30,10 @@ public class DummyCustomerBackend { //should implement the interface from the co
         departureDetail= new DepartureDetail(50, 100, 120, 150, 10, 100, 20, 1, 1, departureDate, lineSummary, null, 1);
         saveReservation( departureDetail, 4, "small" );
     }
+    
+    public static void main( String[] args ) {
+        DummyCustomerBackend dummyCustomerBackend= new DummyCustomerBackend();
+    }
 
     public Collection<LineSummary> createLine( String name, String departurePort,
             String destinationPort, double personPrice, double carPrice,
@@ -128,6 +132,7 @@ public class DummyCustomerBackend { //should implement the interface from the co
                 maxId = reservationDetail.getReservations().get( l ).getId();
             }
         }
+                
         return new ReservationDetail( departureDate, departureSummary,
                                       "Mark Johnson", departureDetail,
                                       2, 2, 1, 0, 40, maxId + 1 );
