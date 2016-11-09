@@ -8,7 +8,7 @@ import java.util.Date;
 import utilities.ReservationDetailListManagement;
 
 public class MockTest {
-
+ 
     private static DummyCustomerBackend dummyCustomerBackend = new DummyCustomerBackend();
     private static ReservationDetailListManagement reservationDetailListManagement = new ReservationDetailListManagement();
     private static DepartureIdentifier departureId = new DepartureIdentifier( 1 );
