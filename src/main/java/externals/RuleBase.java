@@ -1,5 +1,7 @@
 package externals;
 
+import com.mycompany.loanbroker.reciplist.Data;
+import com.mycompany.loanbroker.utilities.MessageUtility;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -10,10 +12,12 @@ import java.util.concurrent.TimeoutException;
 
 public class RuleBase {
 
-    private static ArrayList<String> banks;
+    private static ArrayList<String> allBanks;
+    private static ArrayList<String> relevantBanks;
     private static final String EXCHANGE_NAME = "customer_direct_exchange";
+    private static MessageUtility messageUtility = new MessageUtility();
 
-    public static void main( String[] args ) throws IOException, TimeoutException, InterruptedException {
+    public static void main( String[] args ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
         getRequestFromGetBanks();
     }
 
@@ -21,7 +25,7 @@ public class RuleBase {
 
     }
 
-    public static void getRequestFromGetBanks() throws IOException, TimeoutException, InterruptedException {
+    public static void getRequestFromGetBanks() throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
@@ -34,46 +38,50 @@ public class RuleBase {
         channel.basicConsume( queueName, true, consumer );
         while ( true ) {
             QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-            String message = new String( delivery.getBody() );
+            byte[] message = delivery.getBody();
 
-            System.out.println( " [x] Received from the get banks '" + message + "'" );
+            System.out.println( " [x] Received from the get banks '" + messageUtility.deSerializeBody( message ).toString() + "'" );
 
             sendRelevantBanks( message );
 
         }
     }
 
-    public static String calculateRelevantBanks( String message ) {
-        banks = new ArrayList<>();
-        banks.add( "Danske Bank" );
-        banks.add( "Nordea" );
-        banks.add( "Jyske Bank" );
-        String[] msgElements = message.split( ": " );
-        int length = msgElements.length;
-        int credScore = Integer.parseInt( msgElements[ length - 1 ] );
-        String result = "";
+    public static ArrayList<String> calculateRelevantBanks( byte[] message ) throws IOException, ClassNotFoundException {
+        allBanks = new ArrayList<>();
+        allBanks.add( "Danske Bank" );
+        allBanks.add( "Nordea" );
+        allBanks.add( "Jyske Bank" );
+        relevantBanks = new ArrayList<String>();
+        Data objectMessage = ( Data ) messageUtility.deSerializeBody( message );
+        int credScore = objectMessage.getCreditScore();
         if ( credScore >= 500 ) {
-            result = banks.get( 0 ) + ", " + banks.get( 1 );
+            relevantBanks.add( allBanks.get( 0 ) );
+            relevantBanks.add( allBanks.get( 1 ) );
         } else if ( credScore >= 300 ) {
-            result = banks.get( 1 ) + ", " + banks.get( 1 );
+            relevantBanks.add( allBanks.get( 1 ) );
+            relevantBanks.add( allBanks.get( 2 ) );
         } else {
-            result = banks.get( 2 ) + ", " + banks.get( 0 );
+            relevantBanks.add( allBanks.get( 0 ) );
+            relevantBanks.add( allBanks.get( 2 ) );
         }
-        return result;
+        return relevantBanks;
     }
 
-    public static void sendRelevantBanks( String inputMessage ) throws IOException, TimeoutException, InterruptedException {
+    public static void sendRelevantBanks( byte[] inputMessage ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost( "datdb.cphbusiness.dk" );
         Connection connection = factory.newConnection();
         Channel channel = connection.createChannel();
 
-        String message = inputMessage;
-        String relevant_banks = calculateRelevantBanks( message );
-        String responseMessage= message + "; relevant banks: "+ relevant_banks;
+        ArrayList<String> relevant_banks = calculateRelevantBanks( inputMessage );
+        Data inputObject = ( Data ) messageUtility.deSerializeBody( inputMessage );
+        inputObject.setBanks( relevant_banks );
+        byte[] responseMessage= messageUtility.serializeBody( inputObject);
 
-        channel.basicPublish( EXCHANGE_NAME, "relevant_banks", null, responseMessage.getBytes() );
-        System.out.println( " [x] Sent request to GetBanks '" + responseMessage + "'" );
+        channel.basicPublish( EXCHANGE_NAME, "relevant_banks", null, responseMessage );
+        System.out.println( " [x] Sent request to GetBanks '" 
+                + messageUtility.deSerializeBody( responseMessage).toString() + "'" );
 
         channel.close();
         connection.close();
