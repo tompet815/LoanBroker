@@ -6,16 +6,26 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.TimeoutException;
+import javax.xml.namespace.QName;
+import javax.xml.soap.*;
+import javax.xml.ws.Service;
+import javax.xml.ws.WebServiceRef;
+import org.bank.credit.web.service.CreditScoreService;
 
 public class GetCreditScore {
 
     private static final String EXCHANGE_NAME_CUSTOMER = "customer_direct_exchange";
     private static MessageUtility messageUtility = new MessageUtility();
 //    private static final String EXCHANGE_NAME_CREDIT_BUREAU = "customer_exchange";
+    @WebServiceRef( wsdlLocation
+            = "http://datdb.cphbusiness.dk:8080/CreditBureau/CreditScoreService?wsdl" )
+    private static CreditScoreService service;
 
-    public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
-        getCustomerRequest();
+    public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException, Exception {
+//        getCustomerRequest();
+
     }
 
     //message transmition from the customer to Get Credit Score
@@ -93,5 +103,4 @@ public class GetCreditScore {
         channel.close();
         connection.close();
     }
-
 }

@@ -57,12 +57,14 @@
                         <configuration>
                             <wsdlFiles>
                                 <wsdlFile>localhost_8080/BankWS/InterestRateService.wsdl</wsdlFile>
+                                <wsdlFile>localhost_8080/CreditScoreService/CreditScoreService.wsdl</wsdlFile>
                             </wsdlFiles>
                             <packageName></packageName>
                             <vmArgs>
                                 <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
                             </vmArgs>
                             <wsdlLocation>http://localhost:8080/BankWS/InterestRateService?WSDL</wsdlLocation>
+                            <wsdlLocation>http://139.59.154.97:8080/CreditScoreService/CreditScoreService?wsdl</wsdlLocation>
                             <staleFile>${project.build.directory}/jaxws/stale/InterestRateService.stale</staleFile>
                         </configuration>
                         <id>wsimport-generate-InterestRateService</id>
