@@ -8,7 +8,7 @@ import com.rabbitmq.client.QueueingConsumer;
 import externals.CreditBureau;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
-import static patterns.GetCreditScore.getCreditScore;
+//import static patterns.GetCreditScore.getCreditScore;
 
 public class GetBanks {
 
