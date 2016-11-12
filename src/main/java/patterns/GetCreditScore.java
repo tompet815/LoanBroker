@@ -9,6 +9,8 @@ import com.rabbitmq.client.QueueingConsumer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import javax.xml.ws.Service;
@@ -50,13 +52,19 @@ public class GetCreditScore {
             System.out.println( " [x] Received from the customer '" + inputMessage.toString() + "'" );
 
             //sendRequestCreditBureau( message );
-            getCreditScoreWS( inputMessage.getSsn() );
+            getCreditScoreWS( inputMessage.getSsn(), inputMessage );
         }
     }
 
-    private static int getCreditScoreWS( String ssn ) {
+    private static void getCreditScoreWS( String ssn, Data message ) {
         CreditScoreService port = service.getCreditScoreServicePort();
-        return port.creditScore( ssn );
+        int creditScore= port.creditScore( ssn );
+        message.setCreditScore( creditScore );
+        try {
+            sendScoreToGetBanks( messageUtility.serializeBody( message) );
+        } catch ( Exception ex ) {
+            System.out.println( ex );
+        }
     }
 
     //message transmition from Get Credit Score to Credit Bureau
@@ -97,18 +105,16 @@ public class GetCreditScore {
 //        }
 //    }
     //message transmition from Get Credit Score to Get Banks
-//    public static void sendScoreToGetBanks( byte[] message ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
-//        ConnectionFactory factory = new ConnectionFactory();
-//        factory.setHost( "datdb.cphbusiness.dk" );
-//        Connection connection = factory.newConnection();
-//        Channel channel = connection.createChannel();
-//
-//        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "banks", null, message );
-//        System.out.println( " [x] Sent request to get banks '" + messageUtility.deSerializeBody( message ) + "'" );
-//
-//        getCreditScore();
-//
-//        channel.close();
-//        connection.close();
-//    }
+    public static void sendScoreToGetBanks( byte[] message ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost( "datdb.cphbusiness.dk" );
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+
+        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "banks", null, message );
+        System.out.println( " [x] Sent request to get banks '" + messageUtility.deSerializeBody( message ) + "'" );
+
+        channel.close();
+        connection.close();
+    }
 }

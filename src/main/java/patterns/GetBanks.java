@@ -36,7 +36,7 @@ public class GetBanks {
 
             System.out.println( " [x] Received from the credit score '" + messageUtility.deSerializeBody(message).toString() + "'" );
 
-            sendRequestToRuleBase( message );
+//            sendRequestToRuleBase( message );
         }
     }
 
