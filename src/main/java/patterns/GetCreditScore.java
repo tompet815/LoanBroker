@@ -13,6 +13,7 @@ import javax.xml.soap.*;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceRef;
 import org.bank.credit.web.service.CreditScoreService;
+import org.bank.credit.web.service.CreditScoreService_Service;
 
 public class GetCreditScore {
 
@@ -20,12 +21,12 @@ public class GetCreditScore {
     private static MessageUtility messageUtility = new MessageUtility();
 //    private static final String EXCHANGE_NAME_CREDIT_BUREAU = "customer_exchange";
     @WebServiceRef( wsdlLocation
-            = "http://datdb.cphbusiness.dk:8080/CreditBureau/CreditScoreService?wsdl" )
-    private static CreditScoreService service;
+            = "http://139.59.154.97:8080/CreditScoreService/CreditScoreService?wsdl" )
+    private static CreditScoreService_Service service = new CreditScoreService_Service();
 
     public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException, Exception {
 //        getCustomerRequest();
-
+        System.out.println( getCreditScoreWS( "280938-3429" ) );
     }
 
     //message transmition from the customer to Get Credit Score
@@ -102,5 +103,10 @@ public class GetCreditScore {
 
         channel.close();
         connection.close();
+    }
+
+    private static int getCreditScoreWS( String ssn ) {
+        CreditScoreService port = service.getCreditScoreServicePort();
+        return port.creditScore( ssn );
     }
 }
