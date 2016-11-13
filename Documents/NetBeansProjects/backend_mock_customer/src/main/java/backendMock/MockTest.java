@@ -13,23 +13,24 @@ public class MockTest {
     private static ReservationDetailListManagement reservationDetailListManagement = new ReservationDetailListManagement();
     private static DepartureIdentifier departureId = new DepartureIdentifier( 1 );
     private static ReservationIdentifier reservationIdentifier = new ReservationIdentifier( 1 );
+    private static ReservationIdentifier reservationIdentifier2 = new ReservationIdentifier( 2 );
 
     public static void main( String[] args ) {
         //tests the seeReservation method
-        System.out.println( dummyCustomerBackend.seeReservation( 1 ).getCustomerName() );
+        System.out.println( dummyCustomerBackend.getReservation( reservationIdentifier ).getCustomerName() );
         
         //tests the saveReservation method
-        dummyCustomerBackend.saveReservation( departureId, 14, "small" );
-        System.out.println( dummyCustomerBackend.seeReservation( 2 ).getNumberOfPeople());
+        dummyCustomerBackend.saveReservation( departureId, 14, 14, true,  1, 0);
+        System.out.println( dummyCustomerBackend.getReservation( reservationIdentifier2 ).getNumberOfPeople());
         
         //tests the updateReservation method
-        dummyCustomerBackend.updateReservation( reservationIdentifier, departureId, 25, "lorry" );
-        System.out.println( dummyCustomerBackend.seeReservation( 1 ).getNumberOfPeople() );
-        
-        //tests the deleteReservation method
-        System.out.println( reservationDetailListManagement.getReservationDetails().values() );
-        dummyCustomerBackend.deleteReservation( reservationIdentifier );
-        System.out.println( reservationDetailListManagement.getReservationDetails().values() );
+//        dummyCustomerBackend.updateReservation( reservationIdentifier, departureId, 25, "lorry" );
+//        System.out.println( dummyCustomerBackend.seeReservation( 1 ).getNumberOfPeople() );
+//        
+//        //tests the deleteReservation method
+//        System.out.println( reservationDetailListManagement.getReservationDetails().values() );
+//        dummyCustomerBackend.deleteReservation( reservationIdentifier );
+//        System.out.println( reservationDetailListManagement.getReservationDetails().values() );
     }
 
 }
