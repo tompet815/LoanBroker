@@ -24,13 +24,15 @@ public class MockTest {
         System.out.println( dummyCustomerBackend.getReservation( reservationIdentifier2 ).getNumberOfPeople());
         
         //tests the updateReservation method
-//        dummyCustomerBackend.updateReservation( reservationIdentifier, departureId, 25, "lorry" );
-//        System.out.println( dummyCustomerBackend.seeReservation( 1 ).getNumberOfPeople() );
-//        
-//        //tests the deleteReservation method
-//        System.out.println( reservationDetailListManagement.getReservationDetails().values() );
-//        dummyCustomerBackend.deleteReservation( reservationIdentifier );
-//        System.out.println( reservationDetailListManagement.getReservationDetails().values() );
+        dummyCustomerBackend.updateReservation( reservationIdentifier, departureId, 4, 0, true );
+        System.out.println( dummyCustomerBackend.getReservation( reservationIdentifier ).getNumberOfPeople() );
+        
+        //tests the deleteReservation method
+        System.out.println( "Initially, the list size is " 
+                + reservationDetailListManagement.getReservationDetails().size());
+        dummyCustomerBackend.deleteReservation( reservationIdentifier );
+        System.out.println( "After deletion, the list size is " 
+                + reservationDetailListManagement.getReservationDetails().size());
     }
 
 }

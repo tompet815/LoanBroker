@@ -99,25 +99,26 @@ public class DummyCustomerBackend implements CustomerInterface { //should implem
         return newReservationDetail;
     }
 
-//    @Override
-//    public ReservationSummary updateReservation( ReservationIdentifier reservationIdentifier,
-//            DepartureIdentifier departureIdentifier, int passengersNb, String Cartype ) {
-//        Date departureDate = new Date();
-//        //for each key, compare the values; then take key and update the value
-//        for ( Long l : reservationDetailListManagement.getReservationDetails().keySet() ) {
-//            if ( Math.toIntExact( 1 ) == reservationIdentifier.getId() ) {
-//                return reservationDetailListManagement.getReservationDetails().replace(
-//                        l, new ReservationDetail( departureDate,
-//                                                  reservationDetailListManagement.getReservationDetails().get( l ).getDepartureSummary(),
-//                                                  "new customer", reservationDetailListManagement.getReservationDetails().get( l ).getDeparture(),
-//                                                  passengersNb, reservationDetailListManagement.getReservationDetails().get( l ).getNumberOfResidents(),
-//                                                  reservationDetailListManagement.getReservationDetails().get( l ).getNumberOfCars(),
-//                                                  reservationDetailListManagement.getReservationDetails().get( l ).getNumberOfLorries(),
-//                                                  40, reservationIdentifier.getId() ) );
-//            }
-//        }
-//        return null;
-//    }
+    @Override
+    public ReservationSummary updateReservation( ReservationIdentifier reservationIdentifier, 
+            DepartureIdentifier departureIdentifier, int passengersNb, int numberOfResidents, boolean car ) {
+        Date departureDate = new Date();
+        //for each key, compare the values; then take key and update the value
+        for ( Long l : reservationDetailListManagement.getReservationDetails().keySet() ) {
+            if ( Math.toIntExact( 1 ) == reservationIdentifier.getId() ) {
+                return reservationDetailListManagement.getReservationDetails().replace(
+                        l, new ReservationDetail( departureDate,
+                                                  reservationDetailListManagement.getReservationDetails().get( l ).getDepartureSummary(),
+                                                  "new customer", reservationDetailListManagement.getReservationDetails().get( l ).getDepartureSummary(),
+                                                  passengersNb, reservationDetailListManagement.getReservationDetails().get( l ).getNumberOfResidents(),
+                                                  reservationDetailListManagement.getReservationDetails().get( l ).getNumberOfCars(),
+                                                  reservationDetailListManagement.getReservationDetails().get( l ).getNumberOfLorries(), 40,
+                                                  200,
+                                                  reservationIdentifier.getId() ) );
+            }
+        }
+        return null;
+    }
 
     @Override
     public Boolean deleteReservation( ReservationIdentifier reservationIdentifier ) {
@@ -128,10 +129,5 @@ public class DummyCustomerBackend implements CustomerInterface { //should implem
             }
         }
         return false;
-    }
-
-    @Override
-    public ReservationSummary updateReservation( ReservationIdentifier ri, DepartureIdentifier di, int i, int i1, boolean bln ) {
-        throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
     }
 }
