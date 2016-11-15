@@ -30,7 +30,7 @@ public class GetBanks {
     private static final String EXCHANGENAME = "whatRecipientList"; //exchange used for the recipList
     private static MessageUtility messageUtility = new MessageUtility();
     @WebServiceRef( wsdlLocation
-            = "http://localhost:8080/RuleBaseWS/RuleBase?WSDL" )
+            = "http://localhost:8080/RuleeBasedWS/RuleBase?WSDL" )
     private static RuleBase service = new RuleBase();
 
     public static void main( String[] argv ) throws Exception {
