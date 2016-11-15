@@ -27,6 +27,7 @@ import rulebasews.RuleBaseWS;
 public class GetBanks {
 
     private static final String EXCHANGE_NAME_CUSTOMER = "customer_direct_exchange";
+    private static final String EXCHANGENAME = "whatRecipientList"; //exchange used for the recipList
     private static MessageUtility messageUtility = new MessageUtility();
     @WebServiceRef( wsdlLocation
             = "http://localhost:8080/RuleBaseWS/RuleBase?WSDL" )
@@ -56,7 +57,8 @@ public class GetBanks {
             int creditScore = objectMessage.getCreditScore();
 
             System.out.println( " [x] Received from the credit score '" + objectMessage.toString() + "'" );
-            getRelevantBanks( creditScore );
+            objectMessage.setBanks( getRelevantBanks( creditScore ) );
+            sendRequestRecipList( objectMessage);
         }
     }
 
@@ -74,9 +76,23 @@ public class GetBanks {
         File xml = new File( "relevantBanks.xml" );
         RuleBaseRequest root = ( RuleBaseRequest ) unmarshaller.unmarshal( xml );
 
-        System.out.println("The first bank is " + root.getRelevantBanks().get( 0 ) );
-        System.out.println("The second bank is " + root.getRelevantBanks().get( 1 ) );
+        System.out.println( "The first bank is " + root.getRelevantBanks().get( 0 ) );
+        System.out.println( "The second bank is " + root.getRelevantBanks().get( 1 ) );
         return root.getRelevantBanks();
+    }
+
+    public static void sendRequestRecipList( Data objectToSend ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost( "datdb.cphbusiness.dk" );
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+
+        byte[] dataToSend= messageUtility.serializeBody( objectToSend);
+        channel.basicPublish( EXCHANGENAME, "", null, dataToSend );
+        System.out.println( " [x] Sent request to recipient list: " + objectToSend + "'" );
+
+        channel.close();
+        connection.close();
     }
 
 }
