@@ -16,16 +16,16 @@ import javax.xml.soap.*;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceRef;
 import org.bank.credit.web.service.CreditScoreService;
-import org.bank.credit.web.service.CreditScoreService_Service;
 
 public class GetCreditScore {
 
     private static final String EXCHANGE_NAME_CUSTOMER = "customer_direct_exchange";
     private static MessageUtility messageUtility = new MessageUtility();
 //    private static final String EXCHANGE_NAME_CREDIT_BUREAU = "customer_exchange";
+  
     @WebServiceRef( wsdlLocation
             = "http://139.59.154.97:8080/CreditScoreService/CreditScoreService?wsdl" )
-    private static CreditScoreService_Service service = new CreditScoreService_Service();
+    private static CreditScoreService service;
 
     public static void main( String[] argv ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException, Exception {
         getCustomerRequest();
@@ -57,11 +57,11 @@ public class GetCreditScore {
     }
 
     private static void getCreditScoreWS( String ssn, Data message ) {
-        CreditScoreService port = service.getCreditScoreServicePort();
-        int creditScore= port.creditScore( ssn );
+        int creditScore=service.creditScore(ssn);
+        
         message.setCreditScore( creditScore );
         try {
-            sendScoreToGetBanks( messageUtility.serializeBody( message) );
+            sendScoreToGetBanks( messageUtility.serializeBody(message) );
         } catch ( Exception ex ) {
             System.out.println( ex );
         }

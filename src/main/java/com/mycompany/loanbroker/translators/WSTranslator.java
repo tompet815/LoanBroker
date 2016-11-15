@@ -5,7 +5,6 @@
  */
 package com.mycompany.loanbroker.translators;
 
-import com.google.gson.Gson;
 import com.mycompany.loanbroker.connector.RabbitMQConnector;
 import com.mycompany.loanbroker.interfaces.IMessaging;
 import com.mycompany.loanbroker.reciplist.Data;
@@ -17,6 +16,7 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.what.bankws.BankWS;
+import com.what.bankws.IOException_Exception;
 import com.what.bankws.InterestRateService;
 import com.what.bankws.JAXBException_Exception;
 import java.io.IOException;
@@ -81,6 +81,9 @@ public class WSTranslator implements IMessaging{
         catch (JAXBException_Exception ex) {
             Logger.getLogger(WSTranslator.class.getName()).log(Level.SEVERE, null, ex);
         }
+        catch (IOException_Exception ex) {
+            Logger.getLogger(WSTranslator.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         return false;
     }
@@ -90,7 +93,7 @@ public class WSTranslator implements IMessaging{
         connector.close(channel);
     }
    
-    private static String getInterestRate(String ssn, int creditScore, double loanAmoount, int loanDuration,String replyTo) throws JAXBException_Exception {
+    private static String getInterestRate(String ssn, int creditScore, double loanAmoount, int loanDuration,String replyTo) throws JAXBException_Exception, IOException_Exception {
         BankWS port = service.getBankWSPort();
         return port.getInterestRate(ssn,creditScore,loanAmoount,loanDuration,replyTo);
     }

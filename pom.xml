@@ -70,6 +70,24 @@
                         <id>wsimport-generate-InterestRateService</id>
                         <phase>generate-sources</phase>
                     </execution>
+                    <execution>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlFiles>
+                                <wsdlFile>139.59.154.97_8080/CreditScoreService/CreditScoreService.wsdl</wsdlFile>
+                            </wsdlFiles>
+                            <packageName></packageName>
+                            <vmArgs>
+                                <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+                            </vmArgs>
+                            <wsdlLocation>http://139.59.154.97:8080/CreditScoreService/CreditScoreService?wsdl</wsdlLocation>
+                            <staleFile>${project.build.directory}/jaxws/stale/CreditScoreService.stale</staleFile>
+                        </configuration>
+                        <id>wsimport-generate-CreditScoreService</id>
+                        <phase>generate-sources</phase>
+                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>

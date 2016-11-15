@@ -14,5 +14,6 @@ That way multiple projects can share the same settings (useful for formatting ru
 Any value defined here will override the pom.xml file value but is only applicable to the current project.
 -->
         <org-netbeans-modules-maven-jaxws._5f_C_5f_InterestRateService>http://localhost:8080/BankWS/InterestRateService?WSDL</org-netbeans-modules-maven-jaxws._5f_C_5f_InterestRateService>
+        <org-netbeans-modules-maven-jaxws._5f_C_5f_CreditScoreService>http://139.59.154.97:8080/CreditScoreService/CreditScoreService?wsdl</org-netbeans-modules-maven-jaxws._5f_C_5f_CreditScoreService>
     </properties>
 </project-shared-configuration>
