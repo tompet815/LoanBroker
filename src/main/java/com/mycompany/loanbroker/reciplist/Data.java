@@ -1,6 +1,6 @@
 package com.mycompany.loanbroker.reciplist;
 
-import com.mycompany.loanbroker.utilities.Bank;
+import models.Bank;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

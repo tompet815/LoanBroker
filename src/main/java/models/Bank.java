@@ -1,4 +1,4 @@
-package com.mycompany.loanbroker.utilities;
+package models;
 
 import java.io.Serializable;
 

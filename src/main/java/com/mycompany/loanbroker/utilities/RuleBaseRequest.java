@@ -1,5 +1,6 @@
 package com.mycompany.loanbroker.utilities;
 
+import models.Bank;
 import java.util.ArrayList;
 import javax.xml.bind.annotation.*;
 
