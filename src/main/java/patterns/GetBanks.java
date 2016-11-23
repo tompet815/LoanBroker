@@ -1,6 +1,7 @@
 package patterns;
 
 import com.mycompany.loanbroker.reciplist.Data;
+import com.mycompany.loanbroker.utilities.Bank;
 import com.mycompany.loanbroker.utilities.MessageUtility;
 import com.mycompany.loanbroker.utilities.RuleBaseRequest;
 import com.rabbitmq.client.Channel;
@@ -22,7 +23,7 @@ import rulebasews.IOException_Exception;
 import rulebasews.JAXBException_Exception;
 import rulebasews.RuleBase;
 import rulebasews.RuleBaseWS;
-//import static patterns.GetCreditScore.getCreditScore;
+import static patterns.GetCreditScore.*;
 
 public class GetBanks {
 
@@ -62,7 +63,7 @@ public class GetBanks {
         }
     }
 
-    public static ArrayList<String> getRelevantBanks( int creditScore ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException, IOException_Exception, JAXBException_Exception, JAXBException {
+    public static ArrayList<Bank> getRelevantBanks( int creditScore ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException, IOException_Exception, JAXBException_Exception, JAXBException {
         RuleBaseWS rbws = service.getRuleBaseWSPort();
         String xmlString = rbws.getRelevantBanks( creditScore );
         System.out.println( "This is the xml string: " + xmlString );

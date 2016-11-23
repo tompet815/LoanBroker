@@ -1,5 +1,6 @@
 package com.mycompany.loanbroker.reciplist;
 
+import com.mycompany.loanbroker.utilities.Bank;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,7 +11,7 @@ public class Data implements Serializable {
     private int creditScore;
     private double loanAmoount;
     private int loanDuration;
-    private ArrayList<String> banks;
+    private ArrayList<Bank> banks;
 
     public Data( String ssn, int creditScore, double loanAmoount, int loanDuration ) {
         this.ssn = ssn;
@@ -36,7 +37,7 @@ public class Data implements Serializable {
         return loanDuration;
     }
 
-    public ArrayList<String> getBanks() {
+    public ArrayList<Bank> getBanks() {
         return banks;
     }
 
@@ -56,7 +57,7 @@ public class Data implements Serializable {
         this.loanDuration = loanDuration;
     }
 
-    public void setBanks( ArrayList<String> banks ) {
+    public void setBanks( ArrayList<Bank> banks ) {
         this.banks = banks;
     }
 

@@ -8,17 +8,13 @@ import javax.xml.bind.annotation.*;
 public class RuleBaseRequest {
 
     @XmlElement( name = "relevantBanks" )
-    private ArrayList<String> relevantBanks = new ArrayList<>();
+    private ArrayList<Bank> relevantBanks;
 
-    public ArrayList<String> getRelevantBanks() {
-        return relevantBanks;
+    public RuleBaseRequest() {
+        relevantBanks = new ArrayList<>();
     }
 
-    /* to uncomment after push the RuleBaseWS to GitHub
-     @XmlElement(name="relevantBanks")
-     private ArrayList<Bank> relevantBanks= new ArrayList<>();
-
-     public ArrayList<Bank> getRelevantBanks() {
-     return relevantBanks;
-     } */
+    public ArrayList<Bank> getRelevantBanks() {
+        return relevantBanks;
+    }
 }
