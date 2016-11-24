@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RuleBaseRequest>
+    <relevantBanks>
+        <bankName>Danske Bank</bankName>
+        <type>xml</type>
+    </relevantBanks>
+    <relevantBanks>
+        <bankName>Jyske Bank</bankName>
+        <type>ws</type>
+    </relevantBanks>
+</RuleBaseRequest>

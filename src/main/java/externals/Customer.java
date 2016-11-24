@@ -3,7 +3,7 @@ package externals;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import com.mycompany.loanbroker.reciplist.Data;
+import models.Data;
 import com.mycompany.loanbroker.utilities.MessageUtility;
 import java.util.ArrayList;
 

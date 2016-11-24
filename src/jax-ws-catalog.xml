@@ -6,4 +6,6 @@
     <system systemId="http://139.59.154.97:8080/CreditScoreService/CreditScoreService?xsd=1" uri="wsdl/139.59.154.97_8080/CreditScoreService/CreditScoreService.xsd_1"/>
     <system systemId="http://localhost:8080/RuleBaseWS/RuleBase?WSDL" uri="wsdl/localhost_8080/RuleBaseWS/RuleBase.wsdl"/>
     <system systemId="http://localhost:8080/RuleBaseWS/RuleBase?xsd=1" uri="wsdl/localhost_8080/RuleBaseWS/RuleBase.xsd_1.xsd"/>
+    <system systemId="http://localhost:8080/RuleeBasedWS/RuleBase?WSDL" uri="wsdl/localhost_8080/RuleeBasedWS/RuleBase.wsdl"/>
+    <system systemId="http://localhost:8080/RuleeBasedWS/RuleBase?xsd=1" uri="wsdl/localhost_8080/RuleeBasedWS/RuleBase.xsd_1.xsd"/>
 </catalog>

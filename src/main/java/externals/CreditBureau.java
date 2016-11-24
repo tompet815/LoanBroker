@@ -1,6 +1,6 @@
 package externals;
 
-import com.mycompany.loanbroker.reciplist.Data;
+import models.Data;
 import com.mycompany.loanbroker.utilities.MessageUtility;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
