@@ -16,25 +16,28 @@ public class Data implements Serializable {
 
     private String ssn;
     private int creditScore;
-    private double loanAmoount;
+    private double loanAmount;
     private int loanDuration;
 
     @XmlElementWrapper(name = "bankExchangeNames")
     @XmlElement(name = "bankExchangeName")
     private ArrayList<Bank> banks;
 
-    public Data(String ssn, int creditScore, double loanAmoount, int loanDuration, ArrayList<Bank> banks) {
+    public Data() {
+    }
+
+    public Data(String ssn, int creditScore, double loanAmount, int loanDuration, ArrayList<Bank> banks) {
         this.ssn = ssn;
         this.creditScore = creditScore;
-        this.loanAmoount = loanAmoount;
+        this.loanAmount = loanAmount;
         this.loanDuration = loanDuration;
         this.banks = banks;
     }
 
-    public Data(String ssn, int creditScore, double loanAmoount, int loanDuration) {
+    public Data(String ssn, int creditScore, double loanAmount, int loanDuration) {
         this.ssn = ssn;
         this.creditScore = creditScore;
-        this.loanAmoount = loanAmoount;
+        this.loanAmount = loanAmount;
         this.loanDuration = loanDuration;
         this.banks = null;
     }
@@ -47,8 +50,8 @@ public class Data implements Serializable {
         return creditScore;
     }
 
-    public double getLoanAmoount() {
-        return loanAmoount;
+    public double getLoanAmount() {
+        return loanAmount;
     }
 
     public int getLoanDuration() {
@@ -67,8 +70,8 @@ public class Data implements Serializable {
         this.creditScore = creditScore;
     }
 
-    public void setLoanAmoount(double loanAmoount) {
-        this.loanAmoount = loanAmoount;
+    public void setLoanAmount(double loanAmount) {
+        this.loanAmount = loanAmount;
     }
 
     public void setLoanDuration(int loanDuration) {
@@ -81,8 +84,8 @@ public class Data implements Serializable {
 
     @Override
     public String toString() {
-        return "Data{" + "ssn=" + ssn + ", creditScore=" + creditScore + ", loanAmoount="
-                + loanAmoount + ", loanDuration=" + loanDuration + ", banks " + banks + '}';
+        return "Data{" + "ssn=" + ssn + ", creditScore=" + creditScore + ", loanAmount="
+                + loanAmount + ", loanDuration=" + loanDuration + ", banks " + banks + '}';
     }
 
 }

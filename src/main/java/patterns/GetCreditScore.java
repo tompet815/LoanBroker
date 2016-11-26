@@ -8,7 +8,13 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.ws.WebServiceRef;
 import org.bank.credit.web.service.CreditScoreService;
 import org.bank.credit.web.service.CreditScoreService_Service;
@@ -40,14 +46,21 @@ public class GetCreditScore {
         QueueingConsumer consumer = new QueueingConsumer(channel);
         channel.basicConsume(queueName, true, consumer);
         while (true) {
-            QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-            byte[] message = delivery.getBody();
-            Data inputMessage = (Data) messageUtility.deSerializeBody(message);
-            String corrId = delivery.getProperties().getCorrelationId();
-            System.out.println(" [x] Received from the customer '" + inputMessage.toString() + "'");
-
-            //sendRequestCreditBureau( message );
-            getCreditScoreWS(inputMessage.getSsn(), inputMessage, corrId);
+            try {
+                QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+                byte[] message = delivery.getBody();
+                String stringMessage=removeBom(new String(message));
+                Data inputMessage= unmarchal(stringMessage);
+                //Data inputMessage = (Data) messageUtility.deSerializeBody(message);
+                String corrId = delivery.getProperties().getCorrelationId();
+                System.out.println(" [x] Received from the customer '" + inputMessage.toString() + "'");
+                
+                //sendRequestCreditBureau( message );
+                getCreditScoreWS(inputMessage.getSsn(), inputMessage, corrId);
+            }
+            catch (JAXBException ex) {
+                Logger.getLogger(GetCreditScore.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -62,7 +75,21 @@ public class GetCreditScore {
             System.out.println(ex);
         }
     }
-
+     private static Data unmarchal(String bodyString) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance(Data.class);
+        Unmarshaller unmarshaller = jc.createUnmarshaller();
+        StringReader reader = new StringReader(bodyString);
+        return (Data) unmarshaller.unmarshal(reader);
+    }
+//remove unnecessary charactors before xml declaration 
+    private static String removeBom(String bodyString) {
+        String res = bodyString.trim();
+        int substringIndex = res.indexOf("<?xml");
+        if (substringIndex < 0) {
+            return res;
+        }
+        return res.substring(res.indexOf("<?xml"));
+    }
     //message transmition from Get Credit Score to Credit Bureau
 //    public static void sendRequestCreditBureau( byte[] clientInput ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
 //        ConnectionFactory factory = new ConnectionFactory();

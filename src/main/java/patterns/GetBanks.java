@@ -107,7 +107,7 @@ public class GetBanks {
     public static String convertDataToXML(Data objectToSend) {
         DataToRecipientList dataToRecipientList = new DataToRecipientList(
                 objectToSend.getBanks(), objectToSend.getSsn(), objectToSend.getCreditScore(),
-                objectToSend.getLoanAmoount(), objectToSend.getLoanDuration());
+                objectToSend.getLoanAmount(), objectToSend.getLoanDuration());
 
         JAXBContext jc;
         try {
