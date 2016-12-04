@@ -9,12 +9,16 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceRef;
 import org.bank.credit.web.service.CreditScoreService;
 import org.bank.credit.web.service.CreditScoreService_Service;
@@ -69,7 +73,7 @@ public class GetCreditScore {
         int creditScore = port.creditScore(ssn);
         message.setCreditScore(creditScore);
         try {
-            sendScoreToGetBanks(messageUtility.serializeBody(message), corrId);
+            sendScoreToGetBanks(message, corrId);
         }
         catch (Exception ex) {
             System.out.println(ex);
@@ -90,45 +94,8 @@ public class GetCreditScore {
         }
         return res.substring(res.indexOf("<?xml"));
     }
-    //message transmition from Get Credit Score to Credit Bureau
-//    public static void sendRequestCreditBureau( byte[] clientInput ) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
-//        ConnectionFactory factory = new ConnectionFactory();
-//        factory.setHost( "datdb.cphbusiness.dk" );
-//        Connection connection = factory.newConnection();
-//        Channel channel = connection.createChannel();
-//
-//        channel.basicPublish( EXCHANGE_NAME_CUSTOMER, "credit_bureau", null, clientInput );
-//        System.out.println( " [x] Sent request for credit score '" + messageUtility.deSerializeBody( clientInput ).toString() + "'" );
-//
-//        getCreditScore();
-//
-//        channel.close();
-//        connection.close();
-//    }
-//
-//    //message transmition from Credit Bureau to Get Credit Score
-//    public static void getCreditScore() throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
-//        ConnectionFactory factory = new ConnectionFactory();
-//        factory.setHost( "datdb.cphbusiness.dk" );
-//        Connection connection = factory.newConnection();
-//        Channel channel = connection.createChannel();
-//
-//        String queueName = channel.queueDeclare().getQueue();
-//        channel.queueBind( queueName, EXCHANGE_NAME_CUSTOMER, "credit_score" );
-//
-//        QueueingConsumer consumer = new QueueingConsumer( channel );
-//        channel.basicConsume( queueName, true, consumer );
-//        while ( true ) {
-//            QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-//            byte[] message = delivery.getBody();
-//
-//            System.out.println( " [x] Received credit score = '" + messageUtility.deSerializeBody( message ).toString() + "'" );
-//
-//            sendScoreToGetBanks( message );
-//        }
-//    }
     //message transmition from Get Credit Score to Get Banks
-    public static void sendScoreToGetBanks(byte[] message, String corrId) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
+    public static void sendScoreToGetBanks(Data message, String corrId) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException {
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("datdb.cphbusiness.dk");
         Connection connection = factory.newConnection();
@@ -136,10 +103,31 @@ public class GetCreditScore {
         AMQP.BasicProperties.Builder builder = new AMQP.BasicProperties.Builder();
         builder.correlationId(corrId);
         AMQP.BasicProperties prop = builder.build();
-        channel.basicPublish(EXCHANGE_NAME_CUSTOMER, "banks", prop, message);
-        System.out.println(" [x] Sent request to get banks '" + messageUtility.deSerializeBody(message) + "'");
+        
+        channel.basicPublish(EXCHANGE_NAME_CUSTOMER, "banks", prop, messageUtility.serializeBody(convertDataToXML( message )));
+        System.out.println(" [x] Sent request to get banks '" + convertDataToXML( message ) + "'");
 
         channel.close();
         connection.close();
+    }
+    
+    public static String convertDataToXML(Data objectToSend) {
+        JAXBContext jc;
+        try {
+            jc = JAXBContext.newInstance(Data.class);
+            Marshaller marshaller = jc.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            JAXBElement<Data> je2 = new JAXBElement(new QName(
+                    "Data"), Data.class, objectToSend);
+            StringWriter sw = new StringWriter();
+            marshaller.marshal(je2, sw);
+            String xmlString = sw.toString();
+            System.out.println("xml" + xmlString);
+            return xmlString;
+        }
+        catch (JAXBException ex) {
+            Logger.getLogger(GetCreditScore.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "Exception thrown";
     }
 }
