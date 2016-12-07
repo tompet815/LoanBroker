@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Data;
 
-public class GetCreditScoreMock {
+public class GetCreditScoreMock implements IGetCreditScore{
 
     private static boolean testIfMethodCalled;
 

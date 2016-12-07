@@ -9,7 +9,7 @@ public class GetCreditScoreTest {
     GetCreditScoreMock getCreditScoreMock;
 
     @Test
-    public void tetSend() throws Exception {
+    public void testSend() throws Exception {
         getCreditScoreMock = new GetCreditScoreMock();
         assertTrue( getCreditScoreMock.isTestIfMethodCalled() == false );
         getCreditScoreMock.getCustomerRequest();
