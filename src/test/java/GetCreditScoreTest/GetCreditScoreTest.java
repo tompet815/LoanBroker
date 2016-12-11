@@ -11,9 +11,9 @@ public class GetCreditScoreTest {
     @Test
     public void testSend() throws Exception {
         getCreditScoreMock = new GetCreditScoreMock();
-        assertTrue( getCreditScoreMock.isTestIfMethodCalled() == false );
+        assertFalse( getCreditScoreMock.isTestIfMethodCalled() );
         getCreditScoreMock.getCustomerRequest();
-        assertTrue( getCreditScoreMock.isTestIfMethodCalled() == true );
+        assertTrue( getCreditScoreMock.isTestIfMethodCalled() );
     }
 
 }
