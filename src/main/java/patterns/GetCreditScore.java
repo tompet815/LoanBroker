@@ -34,7 +34,6 @@ public class GetCreditScore implements IGetCreditScore{
 
     public static void main(String[] argv) throws IOException, TimeoutException, InterruptedException, ClassNotFoundException, Exception {
         getCustomerRequest();
-//        System.out.println( getCreditScoreWS( "280938-3429" ) );
     }
 
     //message transmition from the customer to Get Credit Score
@@ -55,11 +54,8 @@ public class GetCreditScore implements IGetCreditScore{
                 byte[] message = delivery.getBody();
                 String stringMessage=removeBom(new String(message));
                 Data inputMessage= unmarchal(stringMessage);
-                //Data inputMessage = (Data) messageUtility.deSerializeBody(message);
                 String corrId = delivery.getProperties().getCorrelationId();
                 System.out.println(" [x] Received from the customer '" + inputMessage.toString() + "'");
-                
-                //sendRequestCreditBureau( message );
                 getCreditScoreWS(inputMessage.getSsn(), inputMessage, corrId);
             }
             catch (JAXBException ex) {
@@ -122,7 +118,6 @@ public class GetCreditScore implements IGetCreditScore{
             StringWriter sw = new StringWriter();
             marshaller.marshal(je2, sw);
             String xmlString = sw.toString();
-            System.out.println("xml" + xmlString);
             return xmlString;
         }
         catch (JAXBException ex) {
