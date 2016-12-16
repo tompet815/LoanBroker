@@ -23,7 +23,7 @@ import javax.xml.ws.WebServiceRef;
 import org.bank.credit.web.service.CreditScoreService;
 import org.bank.credit.web.service.CreditScoreService_Service;
 
-public class GetCreditScore implements IGetCreditScore{
+public class GetCreditScore{
 
     private static final String EXCHANGE_NAME_CUSTOMER = "customer_direct_exchange";
     private static MessageUtility messageUtility = new MessageUtility();
